@@ -1,0 +1,5 @@
+# Ignore output files generated during testing
+*.pdf
+*.eps
+*.svg
+
