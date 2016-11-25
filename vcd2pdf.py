@@ -69,7 +69,7 @@ for scope in scopes:
         activeScope.append(scope[2]);
         variableText = re.findall(VAR_REGEX, scope[3]);
         for var in variableText:
-            variables[var[2]].append(Variable(activeScope[-1], var[3], var[2], int(var[1]), []));
+            variables[var[2]].append(Variable(list(activeScope), var[3], var[2], int(var[1]), []));
 
     elif scope[0] == "upscope":
         activeScope.pop();
@@ -122,10 +122,11 @@ for key, varList in variables.items():
     for var in varList:
         var.states.append( State(last, '') );
 
+
 # Draw the waveforms
 c = canvas.canvas();
 
-
+# Draws the waveform of variable on cavas at x and y
 def drawWavePath(variable, canvas, x, y, xscale, yscale):
     states = variable.states;
 
@@ -141,8 +142,6 @@ def drawWavePath(variable, canvas, x, y, xscale, yscale):
         else:
             canvas.stroke(path.rect(x + states[j].startTime * xscale, y, x + (states[j + 1].startTime - states[j].startTime) * xscale, yscale), [color.rgb.black]);
             c.text(x + ((states[j].startTime + states[j + 1].startTime) / 2.0) * xscale, y + (yscale / 2.0), str(states[j].value), [text.halign.boxright, text.valign.middle]);
-            pass;
-            # Draw bus
 
 
 y = 0;
@@ -150,9 +149,15 @@ yscale = 0.422;
 xscale = 0.15;
 for key, varList in variables.items():
     for var in varList:
-        c.text(-0.2, y + (0.422 / 2.0), var.scope + "::" + var.name.replace("_","\_"), [text.halign.boxright, text.valign.middle]);
+        label = "";
+        for scope in var.scope:
+            label += scope + "::";
+        label += var.name;
+        label = label.replace("_", "\_");
+        c.text(-0.2, y + (0.422 / 2.0), label, [text.halign.boxright, text.valign.middle]);
         drawWavePath(var, c, 0, y, xscale, yscale);
         y += 1;
+
 
 # Fill and trim the canvas
 bounds = c.bbox().enlarged(0.5);
@@ -160,6 +165,7 @@ bg = canvas.canvas([canvas.clip( bounds.path() )])
 bg.fill(bounds.enlarged(1.0).path(), [color.rgb.white])
 
 bg.insert(c);
+
 
 # Write out
 bg.writeEPSfile("out");
