@@ -35,7 +35,7 @@ VAR_REGEX = "\$var\s+(wire|reg)\s+(\d)\s+(.)\s+(\w+)\s+(?:\[(\d+:\d+)\]\s+)?\$en
 
 # CG1 - Time index
 # CG2 - Variables that changed
-TIME_REGEX = "#(\d+)\s*((?:[\db]+\s*[!-~]\s*)*)";
+TIME_REGEX = "#(\d+)\s+((?:(?:b\d+\s+|[01xX])[!-~]\s*)*)"
 
 # CG1 - New value
 # CG2 - Varaible
@@ -139,6 +139,8 @@ def drawWavePath(variable, canvas, x, y, xscale, yscale):
                 if states[j + 1].value != '':
                     canvas.stroke(path.line(x + states[j + 1].startTime * xscale, y + states[j].value * yscale, x + states[j + 1].startTime * xscale, y + states[j + 1].value * yscale));
         else:
+            canvas.stroke(path.rect(x + states[j].startTime * xscale, y, x + (states[j + 1].startTime - states[j].startTime) * xscale, yscale), [color.rgb.black]);
+            c.text(x + ((states[j].startTime + states[j + 1].startTime) / 2.0) * xscale, y + (yscale / 2.0), str(states[j].value), [text.halign.boxright, text.valign.middle]);
             pass;
             # Draw bus
 

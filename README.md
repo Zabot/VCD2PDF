@@ -8,7 +8,6 @@ Output formats supported:
 - SVG
 
 # Known Issues
-- Only 1 bit binary states are supported (No floating states or busses)
 
 # Usage
 ./vcd2pdf input_file
